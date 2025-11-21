@@ -1,5 +1,6 @@
 # lobotorneodebienvenida-database
 
+Repositorio del proyecto.
 ---
 
 ## Aclaración para Edmundo (nuestro profesor):
