@@ -30,7 +30,7 @@ int main(){
 }
 
 void ciclo(struct Dato *datos, int *index){
-    int desicion=0,desicion2=0,el;
+    int desicion=0,desicion2=0,el=0;
      while(desicion!=3){
         mostrarDatos(datos, *index+1,0);
         printf("Que desea hacer?\n1. Agregar jugador\n2. Consultar jugador\n3. Salir\n");
