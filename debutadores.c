@@ -24,6 +24,7 @@ int main(){
     struct Partido partidos[numeroDePartidos];
     cargarPartidos(partidos, numeroDePartidos);
     modificarPartido(partidos, 0);
+    mostrarPartidos(partidos, numeroDePartidos);
     
     return 0;
 }
@@ -94,6 +95,23 @@ void modificarPartido(struct Partido *partidos, int index) {
     printf("%-8s | %-20s | %-6s | %-20s | %-6s | %-20s | %-6s |\n",
            "Jornada", "Local", "Goles", "Visitante", "Goles", "Fase", "Jugado");
     printf("----------------------------------------------------------------------------------------------------\n");
+
+    printf("%cEl partido ya se jug%c? (1-S%c, 0-No): ", 168, 162, 161);
+    if (scanf("%d", &partidos[index].jugado) != 1) {
+        /* entrada inválida: mantener valor anterior */
+    }
+
+    if (!partidos[index].jugado) {
+        partidos[index].jugado = false;
+        partidos[index].jornada = index + 1;
+        partidos[index].locales = true;
+        snprintf(partidos[index].rival, sizeof partidos[index].rival, "No definido");
+        partidos[index].golesAnotados = 0;
+        partidos[index].golesConcedidos = 0;
+        snprintf(partidos[index].fase, sizeof partidos[index].fase, "Fase regular");
+        printf("El partido se marc%c como no jugado y se inicializaron los campos por defecto.\n", 162);
+        return;
+    }
     const char *local_name;
     const char *visitante_name;
     int goles_local;
@@ -119,4 +137,30 @@ void modificarPartido(struct Partido *partidos, int index) {
         goles_visitante,
         partidos[index].fase,
         partidos[index].jugado ? "Si" : "No");
+
+    printf("%cJugamos como local? (1-Si, 0-No):", 168);
+    scanf("%d", (int*)&partidos[index].locales);
+    printf("\n%cContra qui%cn jug%c nuestro equipo?:\n", 168, 130, 160);
+    scanf(" %31[^\n]", partidos[index].rival);
+    printf("%cCu%cntos goles anot%c nuestro equipo?:", 168, 130, 162);
+    scanf("%d", &partidos[index].golesAnotados);
+    printf("%cCu%cntos goles concedimos?:", 168, 130);
+    scanf("%d", &partidos[index].golesConcedidos);
+    int fase_opcion;
+    printf("Seleccione la fase del partido:\n1. Fase regular\n2. Fase de grupos\n3. Eliminatorias\n");
+    scanf("%d", &fase_opcion);
+    switch (fase_opcion) {
+        case 1:
+            snprintf(partidos[index].fase, sizeof partidos[index].fase, "Fase regular");
+            break;
+        case 2:
+            snprintf(partidos[index].fase, sizeof partidos[index].fase, "Fase de grupos");
+            break;
+        case 3:
+            snprintf(partidos[index].fase, sizeof partidos[index].fase, "Eliminatorias");
+            break;
+        default:
+            printf("Opci%cn no valida. Se mantiene la fase actual.\n", 162);
+            break;
+    }
 }
