@@ -18,31 +18,31 @@ void agregarJugador(struct Dato *datos, int index);
 void modificarJugador(struct Dato *datos, int index);
 void eliminarJugador(struct Dato *datos, int *index, int el);
 int consultarJugador(struct Dato *datos, int index);
-void ciclo(struct Dato *datos, int index);
+void ciclo(struct Dato *datos, int *index);
 
 int main(){
     int index = 2;
     struct Dato datos[100];
     printf("--Base de datos de jugadores de Debutadores FC--\n");
     cargarDatos(datos);
-    ciclo(datos, index);
+    ciclo(datos, &index);
     return 0;
 }
 
-void ciclo(struct Dato *datos, int index){
-    int desicion,desicion2;
+void ciclo(struct Dato *datos, int *index){
+    int desicion=0,desicion2=0,el;
      while(desicion!=3){
-        mostrarDatos(datos, index+1,0);
+        mostrarDatos(datos, *index+1,0);
         printf("Que desea hacer?\n1. Agregar jugador\n2. Consultar jugador\n3. Salir\n");
         scanf("%d",&desicion);
         switch (desicion)
         {
         case 1:
-            index++;
-            agregarJugador(datos, index);
+            (*index)++;
+            agregarJugador(datos, *index);
             break;
         case 2:
-            int el=consultarJugador(datos, index);
+            el=consultarJugador(datos, *index);
             if(el==-1){
                 break;
             }
@@ -54,7 +54,7 @@ void ciclo(struct Dato *datos, int index){
                     modificarJugador(datos, el);
                     break;
                 case 2:
-                    eliminarJugador(datos, &index, el);
+                    eliminarJugador(datos, index, el);
                     break;
                 case 3:
                     break;
