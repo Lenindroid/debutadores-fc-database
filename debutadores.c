@@ -93,11 +93,13 @@ void modificarPartido(struct Partido *partidos, int index) {
     printf("%-8s | %-20s | %-6s | %-20s | %-6s | %-20s | %-6s |\n",
            "Jornada", "Local", "Goles", "Visitante", "Goles", "Fase", "Jugado");
     printf("----------------------------------------------------------------------------------------------------\n");
-
+    int jugado_flag;
     printf("%cEl partido ya se jug%c? (1-S%c, 0-No): ", 168, 162, 161);
-    if (scanf("%d", &partidos[index].jugado) != 1) {
-        /* entrada inválida: mantener valor anterior */
-    }
+    scanf("%d", &jugado_flag);
+    if (jugado_flag == 0) 
+        partidos[index].jugado = false;
+    else
+        partidos[index].jugado = true;
 
     if (!partidos[index].jugado) {
         partidos[index].jugado = false;
@@ -110,6 +112,7 @@ void modificarPartido(struct Partido *partidos, int index) {
         printf("El partido se marc%c como no jugado y se inicializaron los campos por defecto.\n", 162);
         return;
     }
+
     const char *local_name;
     const char *visitante_name;
     int goles_local;
@@ -136,8 +139,15 @@ void modificarPartido(struct Partido *partidos, int index) {
         partidos[index].fase,
         partidos[index].jugado ? "Si" : "No");
 
-    printf("%cJugamos como local? (1-Si, 0-No):", 168);
-    scanf("%d", (int*)&partidos[index].locales);
+    int locales_opcion;
+    printf("%cJugamos como local? (1-Si, 0-No): ", 168);
+    scanf("%d", &locales_opcion);
+    if (locales_opcion == 0) 
+        partidos[index].locales = false;
+    else
+        partidos[index].locales = true;
+
+
     printf("\n%cContra qui%cn jug%c nuestro equipo?:\n", 168, 130, 160);
     scanf(" %31[^\n]", partidos[index].rival);
     printf("%cCu%cntos goles anot%c nuestro equipo?:", 168, 130, 162);
