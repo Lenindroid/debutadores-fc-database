@@ -1,7 +1,5 @@
 #include<stdio.h>
-typedef int bool;
-#define true 1
-#define false 0
+#include <stdbool.h>
 
 struct Partido {
     int jornada;
