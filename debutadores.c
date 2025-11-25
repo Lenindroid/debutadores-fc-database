@@ -350,6 +350,7 @@ void modificarPartido(struct Partido *partidos, int index) {
         partidos[index].golesConcedidos = 0;
         snprintf(partidos[index].fase, sizeof partidos[index].fase, "Fase regular");
         printf("El partido se marc%c como no jugado y se inicializaron los campos por defecto.\n", 162);
+        mostrarPartidos(partidos, index + 1);
         return;
     }
 
@@ -411,4 +412,5 @@ void modificarPartido(struct Partido *partidos, int index) {
             printf("Opci%cn no valida. Se mantiene la fase actual.\n", 162);
             break;
     }
+    mostrarPartidos(partidos, index + 1);
 }
