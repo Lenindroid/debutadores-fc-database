@@ -15,12 +15,15 @@ struct Partido {
 
 void cargarPartidos(struct Partido *partidos, int n);
 void mostrarPartidos(struct Partido *partidos, int n);
+void agregarPartido(struct Partido *partidos, int index);
+void modificarPartido(struct Partido *partidos, int index);
+void eliminarPartido(struct Partido *partidos, int index);
 
 int main(){
     int numeroDePartidos = 7;
     struct Partido partidos[numeroDePartidos];
     cargarPartidos(partidos, numeroDePartidos);
-    mostrarPartidos(partidos, numeroDePartidos);
+    modificarPartido(partidos, 0);
     
     return 0;
 }
@@ -84,4 +87,36 @@ void mostrarPartidos(struct Partido *partidos, int n) {
                partidos[i].fase,
                partidos[i].jugado ? "Si" : "No");
     }
+}
+
+void modificarPartido(struct Partido *partidos, int index) {
+    printf("Est%cs modificando el siguiente partido:\n", 160);
+    printf("%-8s | %-20s | %-6s | %-20s | %-6s | %-20s | %-6s |\n",
+           "Jornada", "Local", "Goles", "Visitante", "Goles", "Fase", "Jugado");
+    printf("----------------------------------------------------------------------------------------------------\n");
+    const char *local_name;
+    const char *visitante_name;
+    int goles_local;
+    int goles_visitante;
+
+    if (partidos[index].locales) {
+        local_name = "Debutadores FC";
+        visitante_name = partidos[index].rival;
+        goles_local = partidos[index].golesAnotados;
+        goles_visitante = partidos[index].golesConcedidos;
+    } else {
+        local_name = partidos[index].rival;
+        visitante_name = "Debutadores FC";
+        goles_local = partidos[index].golesConcedidos;
+        goles_visitante = partidos[index].golesAnotados;
+    }
+
+    printf("%-8d | %-20.20s | %-6d | %-20.20s | %-6d | %-20.20s | %-6s |\n",
+        partidos[index].jornada,
+        local_name,
+        goles_local,
+        visitante_name,
+        goles_visitante,
+        partidos[index].fase,
+        partidos[index].jugado ? "Si" : "No");
 }
