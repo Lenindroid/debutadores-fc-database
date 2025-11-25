@@ -2,6 +2,8 @@
 #include <stdbool.h>
 #include <string.h>
 
+bool partidosCargados = false;
+
 struct Dato {
     char matricula[10];
     char nombre [20];
@@ -229,9 +231,38 @@ void cargarDatos(struct Dato *datos) {
 int main_partidos(){
     int numeroDePartidos = 7;
     struct Partido partidos[numeroDePartidos];
-    cargarPartidos(partidos, numeroDePartidos);
-    modificarPartido(partidos, 0);
-    mostrarPartidos(partidos, numeroDePartidos);
+    if (!partidosCargados) cargarPartidos(partidos, numeroDePartidos);
+    
+    printf("--Gestion de partidos de Debutadores FC--\n");
+    printf("%cQu%c desea hacer?\n", 168, 130);
+    printf("1. Mostrar partidos\n2. Modificar partido\n3. Reiniciar base de datos de partidos\n4. Salir\n");
+    int opcion;
+    scanf("%d", &opcion);
+    switch (opcion) {
+        case 1:
+            mostrarPartidos(partidos, numeroDePartidos);
+            break;
+        case 2:
+            int indexModificado;
+            printf("Ingrese el numero del partido a modificar:");
+            scanf("%d", &indexModificado);
+            if (indexModificado < 1 || indexModificado > numeroDePartidos) {
+                printf("N%cmero de partido no v%clido.\n", 163, 160);
+                return 1;
+            }
+            modificarPartido(partidos, indexModificado - 1);
+            printf("Partido modificado correctamente.\n");
+            break;
+        case 3:
+            cargarPartidos(partidos, numeroDePartidos);
+            printf("Base de datos de partidos reiniciada correctamente.\n");
+            break;
+        case 4:
+            break;
+        default:
+            printf("Opci%cn no v%clida.\n", 162, 160);
+            return 1;
+    }
     
     return 0;
 }
