@@ -633,12 +633,7 @@ void agregarPartido(struct Partido *partidos, int index){
 int cargarCSVPartidos(struct Partido *partidos) {
     FILE *file = fopen("data/partidos.csv", "r");
     if (!file) {
-        char cwd[512];
-        if (_getcwd(cwd, sizeof cwd)) {
-            fprintf(stderr, "No se pudo abrir partidos.csv. CWD=%s\n", cwd);
-        } else {
-            fprintf(stderr, "No se pudo abrir partidos.csv. No se pudo obtener CWD.\n");
-        }
+        printf("No se puedo abrir el archivo csv");
         perror("fopen partidos.csv");
         return -1;
     }
