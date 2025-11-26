@@ -1,5 +1,10 @@
-#include<stdio.h>
+ #include<stdio.h>
 #include <stdbool.h>
+#include <string.h>
+#define MAX_PARTIDOS 128
+
+bool partidosCargados = false;
+int numeroDePartidos = 7;
 
 struct Partido {
     int jornada;
@@ -10,19 +15,70 @@ struct Partido {
     char fase[32];
     bool jugado;
 };
+struct Partido partidos[MAX_PARTIDOS];
 
 void cargarPartidos(struct Partido *partidos, int n);
-void mostrarPartidos(struct Partido *partidos, int n);
+void mostrarPartidos(struct Partido *partidos, int inicio, int n);
 void agregarPartido(struct Partido *partidos, int index);
 void modificarPartido(struct Partido *partidos, int index);
-void eliminarPartido(struct Partido *partidos, int index);
+void eliminarPartido(struct Partido *partidos, int *index, int el);
 
 int main(){
-    int numeroDePartidos = 7;
-    struct Partido partidos[numeroDePartidos];
-    cargarPartidos(partidos, numeroDePartidos);
-    modificarPartido(partidos, 0);
-    mostrarPartidos(partidos, numeroDePartidos);
+    if (!partidosCargados) {
+        cargarPartidos(partidos, numeroDePartidos);
+        partidosCargados = true;
+    }
+    
+    printf("--Gestion de partidos de Debutadores FC--\n");
+    printf("%cQu%c desea hacer?\n", 168, 130);
+    printf("1. Mostrar partidos\n2. Modificar partido\n3. Reiniciar base de datos de partidos\n4. A%cadir partido\n5. Eliminar partido\n6. Salir\n", 164);
+    int opcion;
+    scanf("%d", &opcion);
+    switch (opcion) {
+        case 1:
+            mostrarPartidos(partidos, 0, numeroDePartidos);
+            break;
+        case 2:
+            printf("Estos son los partidos actuales:\n");
+            mostrarPartidos(partidos, 0, numeroDePartidos);
+            int indexModificado;
+            printf("Ingrese el ID del partido a modificar:");
+            scanf("%d", &indexModificado);
+            if (indexModificado < 1 || indexModificado > numeroDePartidos) {
+                printf("N%cmero de partido no v%clido.\n", 163, 160);
+                return 1;
+            }
+            modificarPartido(partidos, indexModificado - 1);
+            printf("Partido modificado correctamente.\n");
+            break;
+        case 3:
+            cargarPartidos(partidos, numeroDePartidos);
+            printf("Base de datos de partidos reiniciada correctamente.\n");
+            break;
+        case 4:
+            agregarPartido(partidos, numeroDePartidos);
+            numeroDePartidos++;
+            printf("Partido a%cadido correctamente.\n", 164);
+            break;
+            
+        case 5:
+            printf("Estos son los partidos actuales:\n");
+            mostrarPartidos(partidos, 0, numeroDePartidos);
+            int indexEliminado;
+            printf("Ingrese el ID del partido a eliminar:");
+            scanf("%d", &indexEliminado);
+            if (indexEliminado < 1 || indexEliminado > numeroDePartidos) {
+                printf("N%cmero de partido no v%clido.\n", 163, 160);
+                return 1;
+            }
+            eliminarPartido(partidos, &numeroDePartidos, indexEliminado - 1);
+            break;
+        case 6:
+            break;
+        default:
+            printf("Opci%cn no v%clida.\n", 162, 160);
+            return 1;
+    }
     
     return 0;
 }
@@ -55,11 +111,11 @@ void cargarPartidos(struct Partido *partidos, int n) {
     partidos[2].jugado = true;
 }
 
-void mostrarPartidos(struct Partido *partidos, int n) {
-    printf("%-8s | %-20s | %-6s | %-20s | %-6s | %-20s | %-6s |\n",
-           "Jornada", "Local", "Goles", "Visitante", "Goles", "Fase", "Jugado");
+void mostrarPartidos(struct Partido *partidos,int inicio, int n) {
+    printf("%-8s | %-8s | %-20s | %-6s | %-20s | %-6s | %-20s | %-6s |\n",
+           "ID","Jornada", "Local", "Goles", "Visitante", "Goles", "Fase", "Jugado");
     printf("----------------------------------------------------------------------------------------------------\n");
-    for (int i = 0; i < n; i++) {
+    for (int i = inicio; i < n; i++) {
         const char *local_name;
         const char *visitante_name;
         int goles_local;
@@ -77,7 +133,8 @@ void mostrarPartidos(struct Partido *partidos, int n) {
             goles_visitante = partidos[i].golesAnotados;
         }
 
-        printf("%-8d | %-20.20s | %-6d | %-20.20s | %-6d | %-20.20s | %-6s |\n",
+        printf("%-8d | %-8d | %-20.20s | %-6d | %-20.20s | %-6d | %-20.20s | %-6s |\n",
+               i + 1,
                partidos[i].jornada,
                local_name,
                goles_local,
@@ -90,8 +147,7 @@ void mostrarPartidos(struct Partido *partidos, int n) {
 
 void modificarPartido(struct Partido *partidos, int index) {
     printf("Est%cs modificando el siguiente partido:\n", 160);
-    printf("%-8s | %-20s | %-6s | %-20s | %-6s | %-20s | %-6s |\n",
-           "Jornada", "Local", "Goles", "Visitante", "Goles", "Fase", "Jugado");
+    mostrarPartidos(partidos, index, index + 1);
     printf("----------------------------------------------------------------------------------------------------\n");
     int jugado_flag;
     printf("%cEl partido ya se jug%c? (1-S%c, 0-No): ", 168, 162, 161);
@@ -110,6 +166,7 @@ void modificarPartido(struct Partido *partidos, int index) {
         partidos[index].golesConcedidos = 0;
         snprintf(partidos[index].fase, sizeof partidos[index].fase, "Fase regular");
         printf("El partido se marc%c como no jugado y se inicializaron los campos por defecto.\n", 162);
+        mostrarPartidos(partidos, index, index + 1);
         return;
     }
 
@@ -147,28 +204,58 @@ void modificarPartido(struct Partido *partidos, int index) {
     else
         partidos[index].locales = true;
 
-
+    
+    printf("Introduzca la jornada (n%cmero) del partido: ", 163);
+    scanf("%d", &partidos[index].jornada);
     printf("\n%cContra qui%cn jug%c nuestro equipo?:\n", 168, 130, 160);
     scanf(" %31[^\n]", partidos[index].rival);
     printf("%cCu%cntos goles anot%c nuestro equipo?:", 168, 130, 162);
     scanf("%d", &partidos[index].golesAnotados);
     printf("%cCu%cntos goles concedimos?:", 168, 130);
     scanf("%d", &partidos[index].golesConcedidos);
-    int fase_opcion;
-    printf("Seleccione la fase del partido:\n1. Fase regular\n2. Fase de grupos\n3. Eliminatorias\n");
-    scanf("%d", &fase_opcion);
-    switch (fase_opcion) {
-        case 1:
-            snprintf(partidos[index].fase, sizeof partidos[index].fase, "Fase regular");
-            break;
-        case 2:
-            snprintf(partidos[index].fase, sizeof partidos[index].fase, "Fase de grupos");
-            break;
-        case 3:
-            snprintf(partidos[index].fase, sizeof partidos[index].fase, "Eliminatorias");
-            break;
-        default:
-            printf("Opci%cn no valida. Se mantiene la fase actual.\n", 162);
-            break;
+    printf("Escriba que fase se jug%c:\n", 162);
+    scanf(" %31[^\n]", partidos[index].fase);
+
+    mostrarPartidos(partidos, index, index + 1);
+}
+
+void eliminarPartido(struct Partido *partidos, int *index, int el){
+    for(int i=el; i<(*index); i++){
+        partidos[i] = partidos[i+1];
     }
+    printf("Partido eliminado correctamente.\n");
+    (*index)--;
+}
+
+void agregarPartido(struct Partido *partidos, int index){
+    printf("%cEl partido ya se jug%c? (1-S%c, 0-No): ", 168, 162, 161);
+    int jugado_flag;
+    scanf("%d", &jugado_flag);
+    if (jugado_flag == 0) 
+        partidos[index].jugado = false;
+    else
+        partidos[index].jugado = true;
+
+    if (!partidos[index].jugado) {
+        partidos[index].jugado = false;
+        partidos[index].jornada = index + 1;
+        partidos[index].locales = true;
+        snprintf(partidos[index].rival, sizeof partidos[index].rival, "No definido");
+        partidos[index].golesAnotados = 0;
+        partidos[index].golesConcedidos = 0;
+        snprintf(partidos[index].fase, sizeof partidos[index].fase, "Fase regular");
+        printf("El partido se marc%c como no jugado y se inicializaron los campos por defecto.\n", 162);
+        mostrarPartidos(partidos, index, index + 1);
+        return;
+    }
+    printf("Introduzca la jornada (n%cmero) del partido: ", 163);
+    scanf("%d", &partidos[index].jornada);
+    printf("\n%cContra qui%cn jug%c nuestro equipo?:\n", 168, 130, 160);
+    scanf(" %31[^\n]", partidos[index].rival);
+    printf("%cCu%cntos goles anot%c nuestro equipo?:", 168, 130, 162);
+    scanf("%d", &partidos[index].golesAnotados);
+    printf("%cCu%cntos goles concedimos?:", 168, 130);
+    scanf("%d", &partidos[index].golesConcedidos);
+    printf("Escriba que fase se jug%c:\n", 162);
+    scanf(" %31[^\n]", partidos[index].fase);
 }
