@@ -41,6 +41,7 @@ Menú principal: elegir 1 para jugadores, 2 para partidos. El submenú de partid
 - Para booleans en CSV usa 0/1. El loader convierte 1 → true, 0 → false.
 - Si no quieres que Git incluya la carpeta de ejecución/salida, añade `output/` a `.gitignore`.
 - El array de partidos se guarda en memoria en `partidos[]`. Cargar CSV reemplaza los partidos en memoria y actualiza `numeroDePartidos`.
+- Opción 7 del menú de partidos guarda los partidos a CSV. Si ejecutas el binario desde la carpeta `output/` el programa escribe `../partidos.csv`; ejecuta desde la raíz del proyecto para leer/escribir `partidos.csv` en la carpeta del repo.
 
 ## Aclaración para Edmundo (nuestro profesor)
 El código de este repositorio es original y totalmente creado por los integrantes del equipo.  

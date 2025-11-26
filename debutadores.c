@@ -47,6 +47,7 @@ void agregarPartido(struct Partido *partidos, int index);
 void modificarPartido(struct Partido *partidos, int index);
 void eliminarPartido(struct Partido *partidos, int *index, int el);
 int cargarCSVPartidos(struct Partido *partidos);
+int guardarCSVPartidos(struct Partido *partidos, int n);
 
 int main(){
     int opcion=0;
@@ -338,8 +339,12 @@ int main_partidos(){
             break;
         }
         case 7:
-            printf("Funcionalidad no implementada aun.\n");
-            break;
+            if (guardarCSVPartidos(partidos, numeroDePartidos) != 0) {
+                printf("No se pudo guardar partidos.csv\n");
+            } else {
+                printf("Partidos guardados en partidos.csv\n");
+            }
+             break;
         case 8:
             break;
         default:
@@ -591,4 +596,21 @@ int cargarCSVPartidos(struct Partido *partidos) {
 
     fclose(file);
     return records;
+}
+
+int guardarCSVPartidos(struct Partido *partidos, int n) {
+    FILE *file = fopen("../partidos.csv", "w");
+    if (!file) return -1;
+    for (int i = 0; i < n; ++i) {
+        fprintf(file, "%d,%d,%s,%d,%d,%s,%d\n",
+            partidos[i].jornada,
+            partidos[i].locales ? 1 : 0,
+            partidos[i].rival,
+            partidos[i].golesAnotados,
+            partidos[i].golesConcedidos,
+            partidos[i].fase,
+            partidos[i].jugado ? 1 : 0);
+    }
+    fclose(file);
+    return 0;
 }
