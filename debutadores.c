@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <string.h>
 
+
 struct Dato {
     char matricula[10];
     char nombre [20];
@@ -11,50 +12,56 @@ struct Dato {
     int partidosJugados;
     char posiciones [20];
 };
+
 void mostrarDatos(struct Dato *datos, int n, int in);
-void cargarDatos(struct Dato *datos);
+int cargarDatos(struct Dato *datos, int *in);
+int subirDatos(struct Dato *datos, int in);
 void form(struct Dato *datos, int index);
 void agregarJugador(struct Dato *datos, int index);
 void modificarJugador(struct Dato *datos, int index);
 void eliminarJugador(struct Dato *datos, int *index, int el);
 int consultarJugador(struct Dato *datos, int index);
-void ciclo(struct Dato *datos, int *index);
+void ciclo(struct Dato *datos);
 
-int main(){
-    int index = 2;
+
+int main() {
     struct Dato datos[100];
     printf("--Base de datos de jugadores de Debutadores FC--\n");
-    cargarDatos(datos);
-    ciclo(datos, &index);
+    ciclo(datos);
     return 0;
 }
 
-void ciclo(struct Dato *datos, int *index){
+void ciclo(struct Dato *datos){
+    int index=0;
     int desicion=0,desicion2=0,el=0;
+    cargarDatos(datos, &index);
      while(desicion!=3){
-        mostrarDatos(datos, *index+1,0);
+        mostrarDatos(datos, index+1,0);
         printf("Que desea hacer?\n1. Agregar jugador\n2. Consultar jugador\n3. Salir\n");
         scanf("%d",&desicion);
         switch (desicion)
         {
         case 1:
-            (*index)++;
-            agregarJugador(datos, *index);
+            index++;
+            agregarJugador(datos, index);
+            subirDatos(datos,index);
             break;
         case 2:
-            el=consultarJugador(datos, *index);
+            el=consultarJugador(datos, index);
             if(el==-1){
                 break;
             }
-            printf("Que desea hacer?\n1. Modificar jugador\n2. Eliminar jugador\n 3.Regresar\n");
+            printf("Que desea hacer?\n1. Modificar jugador\n2. Eliminar jugador\n3.Regresar\n");
             scanf("%d",&desicion2);
             switch (desicion2)
             {
                 case 1:
                     modificarJugador(datos, el);
+                    subirDatos(datos, index);
                     break;
                 case 2:
-                    eliminarJugador(datos, index, el);
+                    eliminarJugador(datos, &index, el);
+                    subirDatos(datos, index);
                     break;
                 case 3:
                     break;
@@ -72,22 +79,30 @@ void ciclo(struct Dato *datos, int *index){
     }
 }
 
-void form(struct Dato *datos, int index){
-        printf("Matricula:");
-        scanf(" %s", datos[index].matricula);
-        printf("Nombre:");
-        scanf(" %s", datos[index].nombre);
-        printf("Apellido:");
-        scanf(" %s", datos[index].apellido);
-        printf("Goles:");
-        scanf("%d", &datos[index].goles);
-        printf("Asistencias:");
-        scanf("%d", &datos[index].asistencias);
-        printf("Partidos Jugados:");
-        scanf("%d", &datos[index].partidosJugados);
-        printf("Posicion:");
-        scanf(" %s", datos[index].posiciones);
+void form(struct Dato *datos, int index) {
+    printf("Matricula: ");
+    scanf(" %9s", datos[index].matricula);
+    getchar();
+    printf("Nombre: ");
+    scanf(" %19[^\n]", datos[index].nombre);
+    getchar();
+    printf("Apellido: ");
+    scanf(" %24[^\n]", datos[index].apellido);
+    getchar();
+    printf("Goles: ");
+    scanf("%d", &datos[index].goles);
+    getchar();
+    printf("Asistencias: ");
+    scanf("%d", &datos[index].asistencias);
+    getchar();
+    printf("Partidos Jugados: ");
+    scanf("%d", &datos[index].partidosJugados);
+    getchar();
+    printf("Posicion: ");
+    scanf(" %19[^\n]", datos[index].posiciones);
+    getchar();
 }
+
 
 void agregarJugador(struct Dato *datos, int index){
     int correcto=0;
@@ -160,29 +175,59 @@ void mostrarDatos(struct Dato *datos, int n, int in){
            datos[i].posiciones);
     }
 }
-void cargarDatos(struct Dato *datos) {
+int cargarDatos(struct Dato *datos, int *in) {
+    FILE *file;
+    int read=0;
+    file = fopen("jugadores.csv", "r");
 
-    snprintf(datos[0].matricula, sizeof datos[0].matricula, "202530977");
-    snprintf(datos[0].nombre, sizeof datos[0].nombre, "Lenin");
-    snprintf(datos[0].apellido, sizeof datos[0].apellido, "Rojas Sanchez");
-    datos[0].goles = 4;
-    datos[0].asistencias = 6;
-    datos[0].partidosJugados = 3;
-    snprintf(datos[0].posiciones, sizeof datos[0].posiciones, "Portero");
-    
-    snprintf(datos[1].matricula, sizeof datos[1].matricula, "202523496");
-    snprintf(datos[1].nombre, sizeof datos[1].nombre, "Daniel Elihud");
-    snprintf(datos[1].apellido, sizeof datos[1].apellido, "Mancera Lopez");
-    datos[1].goles = 6;
-    datos[1].asistencias = 9;
-    datos[1].partidosJugados = 6;
-    snprintf(datos[1].posiciones, sizeof datos[1].posiciones, "Delantero");
+    if (file == NULL) {
+        printf("Error al abrir el archivo.\n");
+        return 1;
+    }
+    while(true){
+        read = fscanf(file,
+            " %9[^,],%19[^,],%24[^,],%d,%d,%d,%19[^\n]\n",
+            datos[*in].matricula,
+            datos[*in].nombre,
+            datos[*in].apellido,
+            &datos[*in].goles,
+            &datos[*in].asistencias,
+            &datos[*in].partidosJugados,
+            datos[*in].posiciones
+        );
 
-    snprintf(datos[2].matricula, sizeof datos[2].matricula, "202523252");
-    snprintf(datos[2].nombre, sizeof datos[2].nombre, "Jose Francisco");
-    snprintf(datos[2].apellido, sizeof datos[2].apellido, "Lozada Luna");
-    datos[2].goles = 5;
-    datos[2].asistencias = 6;
-    datos[2].partidosJugados = 8;
-    snprintf(datos[2].posiciones, sizeof datos[2].posiciones, "Lateral derecho");
+        if (read == EOF || feof(file)) break;
+
+        if (read != 7) {
+            printf("Formato de archivo incorrecto.\n");
+            fclose(file);
+            return 1;
+        }
+        (*in)++;
+    }
+    fclose(file);     
+    return 0;
+}
+
+int subirDatos(struct Dato *datos, int in){
+    FILE *file;
+    file = fopen("jugadores.csv", "w");
+
+    if (file == NULL) {
+        printf("Error al abrir el archivo.\n");
+        return 1;
+    }
+    for(int i=0; i<=in;i++){
+        fprintf(file,
+                "%s,%s,%s,%d,%d,%d,%s\n",
+                datos[i].matricula,
+                datos[i].nombre,
+                datos[i].apellido,
+                datos[i].goles,
+                datos[i].asistencias,
+                datos[i].partidosJugados,
+                datos[i].posiciones);
+    }  
+    fclose(file);   
+    return 0;
 }
