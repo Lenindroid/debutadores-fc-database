@@ -13,14 +13,22 @@ Permite: listar, agregar, modificar y eliminar jugadores; listar, agregar, modif
 ## Formato de los CSV
 - jugadores.csv (7 columnas):
   matricula,nombre,apellido,goles,asistencias,partidosJugados,posicion
-  Ejemplo:
-  123456789,Juan,Perez,5,2,10,Delantero
 
-- partidos.csv (7 columnas, en este orden):
+- partidos.csv (7 columnas en este orden):
   jornada,locales,rival,golesAnotados,golesConcedidos,fase,jugado
-  Donde locales y jugado usan 0 o 1.
-  Ejemplo:
-  1,0,THE WOLFS,6,7,Fase regular,1
+  Donde:
+  - jornada: número de la jornada
+  - locales: 1 si Debutadores FC juega como local, 0 si juega de visitante
+  - rival: nombre del equipo rival (puede contener espacios; no usar comas)
+  - golesAnotados: goles de Debutadores FC
+  - golesConcedidos: goles del rival
+  - fase: texto con la fase ("Fase regular", "Octavos de final", ...)
+  - jugado: 1 si el partido ya se jugó, 0 si está por jugarse
+
+Ejemplo de línea:
+1,1,THE WOLFS,7,6,Fase regular,1
+
+Nota: el programa guarda en memoria un conjunto por defecto de partidos (10 jornadas) al iniciar si no cargas CSV; cargar CSV sustituye la memoria si el archivo está accesible desde el directorio de trabajo del ejecutable.
 
 > Nota: el programa usa la ruta relativa del working directory para abrir los CSV. Ejecuta el binario desde la carpeta del proyecto (o coloca los CSV en el directorio de trabajo del ejecutable). Si el CWD es `output/` el programa no encontrará `partidos.csv` a menos que lo copies allí.
 

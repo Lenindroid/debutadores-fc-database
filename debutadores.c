@@ -5,7 +5,7 @@
 #define MAX_PARTIDOS 128
 
 bool partidosCargados = false;
-int numeroDePartidos = 7;
+int numeroDePartidos = 10;
 
 struct Dato {
     char matricula[10];
@@ -284,7 +284,7 @@ int main_partidos(){
     
     printf("--Gestion de partidos de Debutadores FC--\n");
     printf("%cQu%c desea hacer?\n", 168, 130);
-    printf("1. Mostrar partidos\n2. Modificar partido\n3. Reiniciar base de datos de partidos\n4. A%cadir partido\n5. Eliminar partido\n6. Cargar desde CSV\n7. Guardar a CSV\n8. Salir", 164);
+    printf("1. Mostrar partidos\n2. Modificar partido\n3. Reiniciar base de datos de partidos\n4. A%cadir partido\n5. Eliminar partido\n6. Cargar desde CSV\n7. Guardar a CSV\n8. Salir\n", 164);
     int opcion;
     scanf("%d", &opcion);
     switch (opcion) {
@@ -356,31 +356,96 @@ int main_partidos(){
 }
 
 void cargarPartidos(struct Partido *partidos, int n) {
-    for (int i = 0; i < n; i++) {
+    if (n < 10) n = 10;
+    for (int i = 0; i < n; ++i) {
         partidos[i].jornada = i + 1;
         partidos[i].locales = true;
         snprintf(partidos[i].rival, sizeof partidos[i].rival, "No definido");
         partidos[i].golesAnotados = 0;
         partidos[i].golesConcedidos = 0;
         snprintf(partidos[i].fase, sizeof partidos[i].fase, "Fase regular");
-        partidos[i].jugado = false;
+        partidos[i].jugado = true;
     }
-    
+
+    partidos[0].jornada = 1;
+    partidos[0].locales = true;
     snprintf(partidos[0].rival, sizeof partidos[0].rival, "THE WOLFS");
     partidos[0].golesAnotados = 7;
     partidos[0].golesConcedidos = 6;
+    snprintf(partidos[0].fase, sizeof partidos[0].fase, "Fase regular");
     partidos[0].jugado = true;
-    
-    snprintf(partidos[1].rival, sizeof partidos[1].rival, "PAPIS INGE");
+
+    partidos[1].jornada = 2;
     partidos[1].locales = false;
+    snprintf(partidos[1].rival, sizeof partidos[1].rival, "PAPIS INGE");
     partidos[1].golesAnotados = 7;
-    partidos[1].golesConcedidos = 11;
+    partidos[1].golesConcedidos = 9;
+    snprintf(partidos[1].fase, sizeof partidos[1].fase, "Fase regular");
     partidos[1].jugado = true;
-    
+
+    partidos[2].jornada = 3;
+    partidos[2].locales = true;
     snprintf(partidos[2].rival, sizeof partidos[2].rival, "THE WOLFS");
-    partidos[2].golesAnotados = 7;
-    partidos[2].golesConcedidos = 6;
+    partidos[2].golesAnotados = 3;
+    partidos[2].golesConcedidos = 0;
+    snprintf(partidos[2].fase, sizeof partidos[2].fase, "Fase regular");
     partidos[2].jugado = true;
+
+    partidos[3].jornada = 4;
+    partidos[3].locales = false;
+    snprintf(partidos[3].rival, sizeof partidos[3].rival, "TORTOLITOS FC");
+    partidos[3].golesAnotados = 7;
+    partidos[3].golesConcedidos = 11;
+    snprintf(partidos[3].fase, sizeof partidos[3].fase, "Fase regular");
+    partidos[3].jugado = true;
+
+    partidos[4].jornada = 5;
+    partidos[4].locales = false;
+    snprintf(partidos[4].rival, sizeof partidos[4].rival, "ESCROTOLEANO UNITED");
+    partidos[4].golesAnotados = 4;
+    partidos[4].golesConcedidos = 2;
+    snprintf(partidos[4].fase, sizeof partidos[4].fase, "Fase regular");
+    partidos[4].jugado = true;
+
+    partidos[5].jornada = 6;
+    partidos[5].locales = false;
+    snprintf(partidos[5].rival, sizeof partidos[5].rival, "FC OLIMPO");
+    partidos[5].golesAnotados = 3;
+    partidos[5].golesConcedidos = 0;
+    snprintf(partidos[5].fase, sizeof partidos[5].fase, "Fase regular");
+    partidos[5].jugado = true;
+
+    partidos[6].jornada = 7;
+    partidos[6].locales = false;
+    snprintf(partidos[6].rival, sizeof partidos[6].rival, "DRAGONES FC");
+    partidos[6].golesAnotados = 3;
+    partidos[6].golesConcedidos = 0;
+    snprintf(partidos[6].fase, sizeof partidos[6].fase, "Fase regular");
+    partidos[6].jugado = true;
+
+    partidos[7].jornada = 8;
+    partidos[7].locales = true;
+    snprintf(partidos[7].rival, sizeof partidos[7].rival, "GANADO POR DEFAULT");
+    partidos[7].golesAnotados = 3;
+    partidos[7].golesConcedidos = 0;
+    snprintf(partidos[7].fase, sizeof partidos[7].fase, "Fase regular");
+    partidos[7].jugado = true;
+
+    partidos[8].jornada = 9;
+    partidos[8].locales = true;
+    snprintf(partidos[8].rival, sizeof partidos[8].rival, "Civilinhos");
+    partidos[8].golesAnotados = 3;
+    partidos[8].golesConcedidos = 0;
+    snprintf(partidos[8].fase, sizeof partidos[8].fase, "Fase regular");
+    partidos[8].jugado = true;
+
+    partidos[9].jornada = 10;
+    partidos[9].locales = false;
+    snprintf(partidos[9].rival, sizeof partidos[9].rival, "Civilinhos");
+    partidos[9].golesAnotados = 0;
+    partidos[9].golesConcedidos = 0;
+    snprintf(partidos[9].fase, sizeof partidos[9].fase, "Octavos de final");
+    partidos[9].jugado = false;
 }
 
 void mostrarPartidos(struct Partido *partidos,int inicio, int n) {
