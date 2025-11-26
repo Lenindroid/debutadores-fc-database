@@ -1,4 +1,4 @@
-# Ignorar ejecutables de Windows
-#*.exe
-#output/
-#.vscode/
+# Ignorar ejecutables de Windows y cosos del vs code
+*.exe
+output/
+.vscode/
