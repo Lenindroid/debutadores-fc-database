@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <direct.h>   // _getcwd
 #define MAX_PARTIDOS 128
 
 bool partidosCargados = false;
@@ -45,6 +46,7 @@ void mostrarPartidos(struct Partido *partidos, int inicio, int n);
 void agregarPartido(struct Partido *partidos, int index);
 void modificarPartido(struct Partido *partidos, int index);
 void eliminarPartido(struct Partido *partidos, int *index, int el);
+int cargarCSVPartidos(struct Partido *partidos);
 
 int main(){
     int opcion=0;
@@ -281,7 +283,7 @@ int main_partidos(){
     
     printf("--Gestion de partidos de Debutadores FC--\n");
     printf("%cQu%c desea hacer?\n", 168, 130);
-    printf("1. Mostrar partidos\n2. Modificar partido\n3. Reiniciar base de datos de partidos\n4. A%cadir partido\n5. Eliminar partido\n6. Salir\n", 164);
+    printf("1. Mostrar partidos\n2. Modificar partido\n3. Reiniciar base de datos de partidos\n4. A%cadir partido\n5. Eliminar partido\n6. Cargar desde CSV\n7. Guardar a CSV\n8. Salir", 164);
     int opcion;
     scanf("%d", &opcion);
     switch (opcion) {
@@ -323,7 +325,22 @@ int main_partidos(){
             }
             eliminarPartido(partidos, &numeroDePartidos, indexEliminado - 1);
             break;
-        case 6:
+        case 6: {
+            int n = cargarCSVPartidos(partidos);
+            if (n < 0) {
+                printf("No se pudo abrir partidos.csv\n");
+            } else {
+                numeroDePartidos = n;
+                partidosCargados = true;
+                printf("Se cargaron %d partidos desde partidos.csv\n", n);
+                mostrarPartidos(partidos, 0, numeroDePartidos);
+            }
+            break;
+        }
+        case 7:
+            printf("Funcionalidad no implementada aun.\n");
+            break;
+        case 8:
             break;
         default:
             printf("Opci%cn no v%clida.\n", 162, 160);
@@ -498,6 +515,14 @@ void agregarPartido(struct Partido *partidos, int index){
         mostrarPartidos(partidos, index, index + 1);
         return;
     }
+
+    int locales_opcion;
+    printf("%cJugamos como local? (1-Si, 0-No): ", 168);
+    scanf("%d", &locales_opcion);
+    if (locales_opcion == 0) 
+        partidos[index].locales = false;
+    else
+        partidos[index].locales = true;
     printf("Introduzca la jornada (n%cmero) del partido: ", 163);
     scanf("%d", &partidos[index].jornada);
     printf("\n%cContra qui%cn jug%c nuestro equipo?:\n", 168, 130, 160);
@@ -508,4 +533,62 @@ void agregarPartido(struct Partido *partidos, int index){
     scanf("%d", &partidos[index].golesConcedidos);
     printf("Escriba que fase se jug%c:\n", 162);
     scanf(" %31[^\n]", partidos[index].fase);
+}
+
+int cargarCSVPartidos(struct Partido *partidos) {
+    FILE *file = fopen("../partidos.csv", "r");
+    if (!file) {
+        char cwd[512];
+        if (_getcwd(cwd, sizeof cwd)) {
+            fprintf(stderr, "No se pudo abrir partidos.csv. CWD=%s\n", cwd);
+        } else {
+            fprintf(stderr, "No se pudo abrir partidos.csv. No se pudo obtener CWD.\n");
+        }
+        perror("fopen partidos.csv");
+        return -1;
+    }
+
+    char line[512];
+    int records = 0;
+
+    while (fgets(line, sizeof line, file)) {
+        if (line[0] == '\n' || line[0] == '\r') continue;
+
+        int jornada, locales_i, golesA, golesB, jugado_i;
+        char rival[32];
+        char fase[64];
+
+        int matched = sscanf(line,
+            " %d,%d,%31[^,],%d,%d,%63[^,\r\n],%d",
+            &jornada,
+            &locales_i,
+            rival,
+            &golesA,
+            &golesB,
+            fase,
+            &jugado_i
+        );
+
+        if (matched != 7) {
+            fprintf(stderr, "Formato incorrecto en partidos.csv (linea %d)\n", records + 1);
+            continue;
+        }
+
+        partidos[records].jornada = jornada;
+        partidos[records].locales = locales_i ? true : false;
+        strncpy(partidos[records].rival, rival, sizeof partidos[records].rival - 1);
+        partidos[records].rival[sizeof partidos[records].rival - 1] = '\0';
+        partidos[records].golesAnotados = golesA;
+        partidos[records].golesConcedidos = golesB;
+        strncpy(partidos[records].fase, fase, sizeof partidos[records].fase - 1);
+        partidos[records].fase[sizeof partidos[records].fase - 1] = '\0';
+        partidos[records].jugado = jugado_i ? true : false;
+
+        records++;
+        if (records >= MAX_PARTIDOS) break;
+    }
+    numeroDePartidos = records;
+
+    fclose(file);
+    return records;
 }
