@@ -43,7 +43,7 @@ void cargarPartidos(struct Partido *partidos, int n);
 void mostrarPartidos(struct Partido *partidos, int inicio, int n);
 void agregarPartido(struct Partido *partidos, int index);
 void modificarPartido(struct Partido *partidos, int index);
-void eliminarPartido(struct Partido *partidos, int index);
+void eliminarPartido(struct Partido *partidos, int *index, int el);
 
 int main(){
     int opcion=0;
@@ -239,7 +239,7 @@ int main_partidos(){
     
     printf("--Gestion de partidos de Debutadores FC--\n");
     printf("%cQu%c desea hacer?\n", 168, 130);
-    printf("1. Mostrar partidos\n2. Modificar partido\n3. Reiniciar base de datos de partidos\n4. Salir\n");
+    printf("1. Mostrar partidos\n2. Modificar partido\n3. Reiniciar base de datos de partidos\n4. Eliminar partido\n5. Salir\n");
     int opcion;
     scanf("%d", &opcion);
     switch (opcion) {
@@ -264,6 +264,19 @@ int main_partidos(){
             printf("Base de datos de partidos reiniciada correctamente.\n");
             break;
         case 4:
+            printf("Estos son los partidos actuales:\n");
+            mostrarPartidos(partidos, 0, numeroDePartidos);
+            int indexEliminado;
+            printf("Ingrese el ID del partido a eliminar:");
+            scanf("%d", &indexEliminado);
+            if (indexEliminado < 1 || indexEliminado > numeroDePartidos) {
+                printf("N%cmero de partido no v%clido.\n", 163, 160);
+                return 1;
+            }
+            eliminarPartido(partidos, &numeroDePartidos, indexEliminado - 1);
+            printf("Partido eliminado correctamente.\n");
+            break;
+        case 5:
             break;
         default:
             printf("Opci%cn no v%clida.\n", 162, 160);
@@ -407,4 +420,12 @@ void modificarPartido(struct Partido *partidos, int index) {
     scanf(" %31[^\n]", partidos[index].fase);
 
     mostrarPartidos(partidos, index, index + 1);
+}
+
+void eliminarPartido(struct Partido *partidos, int *index, int el){
+    for(int i=el; i<(*index); i++){
+        partidos[i] = partidos[i+1];
+    }
+    printf("Partido eliminado correctamente.\n");
+    (*index)--;
 }
