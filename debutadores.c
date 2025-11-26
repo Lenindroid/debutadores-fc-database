@@ -136,8 +136,7 @@ void form(struct Dato *datos, int index){
 void agregarJugador(struct Dato *datos, int index){
     int correcto=0;
     while(correcto==0){
-        printf("--Ingresa los datos del nuevo jugador:--\n");
-        form(datos, index);
+        
         printf("Los datos son correctos? (1-Si, 0-No):");
         scanf("%d",&correcto);
         if(correcto==0){
@@ -239,7 +238,7 @@ int main_partidos(){
     
     printf("--Gestion de partidos de Debutadores FC--\n");
     printf("%cQu%c desea hacer?\n", 168, 130);
-    printf("1. Mostrar partidos\n2. Modificar partido\n3. Reiniciar base de datos de partidos\n4. Eliminar partido\n5. Salir\n");
+    printf("1. Mostrar partidos\n2. Modificar partido\n3. Reiniciar base de datos de partidos\n4. A%cadir partido\n5. Eliminar partido\n6. Salir\n", 164);
     int opcion;
     scanf("%d", &opcion);
     switch (opcion) {
@@ -264,6 +263,12 @@ int main_partidos(){
             printf("Base de datos de partidos reiniciada correctamente.\n");
             break;
         case 4:
+            agregarPartido(partidos, numeroDePartidos);
+            numeroDePartidos++;
+            printf("Partido a%cadido correctamente.\n", 164);
+            break;
+            
+        case 5:
             printf("Estos son los partidos actuales:\n");
             mostrarPartidos(partidos, 0, numeroDePartidos);
             int indexEliminado;
@@ -274,9 +279,8 @@ int main_partidos(){
                 return 1;
             }
             eliminarPartido(partidos, &numeroDePartidos, indexEliminado - 1);
-            printf("Partido eliminado correctamente.\n");
             break;
-        case 5:
+        case 6:
             break;
         default:
             printf("Opci%cn no v%clida.\n", 162, 160);
@@ -428,4 +432,37 @@ void eliminarPartido(struct Partido *partidos, int *index, int el){
     }
     printf("Partido eliminado correctamente.\n");
     (*index)--;
+}
+
+void agregarPartido(struct Partido *partidos, int index){
+    printf("%cEl partido ya se jug%c? (1-S%c, 0-No): ", 168, 162, 161);
+    int jugado_flag;
+    scanf("%d", &jugado_flag);
+    if (jugado_flag == 0) 
+        partidos[index].jugado = false;
+    else
+        partidos[index].jugado = true;
+
+    if (!partidos[index].jugado) {
+        partidos[index].jugado = false;
+        partidos[index].jornada = index + 1;
+        partidos[index].locales = true;
+        snprintf(partidos[index].rival, sizeof partidos[index].rival, "No definido");
+        partidos[index].golesAnotados = 0;
+        partidos[index].golesConcedidos = 0;
+        snprintf(partidos[index].fase, sizeof partidos[index].fase, "Fase regular");
+        printf("El partido se marc%c como no jugado y se inicializaron los campos por defecto.\n", 162);
+        mostrarPartidos(partidos, index, index + 1);
+        return;
+    }
+    printf("Introduzca la jornada (n%cmero) del partido: ", 163);
+    scanf("%d", &partidos[index].jornada);
+    printf("\n%cContra qui%cn jug%c nuestro equipo?:\n", 168, 130, 160);
+    scanf(" %31[^\n]", partidos[index].rival);
+    printf("%cCu%cntos goles anot%c nuestro equipo?:", 168, 130, 162);
+    scanf("%d", &partidos[index].golesAnotados);
+    printf("%cCu%cntos goles concedimos?:", 168, 130);
+    scanf("%d", &partidos[index].golesConcedidos);
+    printf("Escriba que fase se jug%c:\n", 162);
+    scanf(" %31[^\n]", partidos[index].fase);
 }
