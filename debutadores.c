@@ -222,8 +222,7 @@ void mostrarDatos(struct Dato *datos, int n, int in){
 int cargarDatos(struct Dato *datos, int *in) {
     FILE *file;
     int read=0;
-    file = fopen("jugadores.csv", "r");
-
+    file = fopen("data/jugadores.csv", "r");
     if (file == NULL) {
         printf("Error al abrir el archivo.\n");
         return 1;
@@ -255,8 +254,7 @@ int cargarDatos(struct Dato *datos, int *in) {
 
 int subirDatos(struct Dato *datos, int in){
     FILE *file;
-    file = fopen("jugadores.csv", "w");
-
+    file = fopen("data/jugadores.csv", "w");
     if (file == NULL) {
         printf("Error al abrir el archivo.\n");
         return 1;
@@ -606,7 +604,7 @@ void agregarPartido(struct Partido *partidos, int index){
 }
 
 int cargarCSVPartidos(struct Partido *partidos) {
-    FILE *file = fopen("../partidos.csv", "r");
+    FILE *file = fopen("data/partidos.csv", "r");
     if (!file) {
         char cwd[512];
         if (_getcwd(cwd, sizeof cwd)) {
@@ -664,7 +662,7 @@ int cargarCSVPartidos(struct Partido *partidos) {
 }
 
 int guardarCSVPartidos(struct Partido *partidos, int n) {
-    FILE *file = fopen("../partidos.csv", "w");
+    FILE *file = fopen("data/partidos.csv", "w");
     if (!file) return -1;
     for (int i = 0; i < n; ++i) {
         fprintf(file, "%d,%d,%s,%d,%d,%s,%d\n",
