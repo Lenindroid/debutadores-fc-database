@@ -31,6 +31,7 @@ struct Partido partidos[MAX_PARTIDOS];
 int main_jugadores();
 int main_partidos();
 
+void cargarDatosC(struct Dato *datos);
 void mostrarDatos(struct Dato *datos, int n, int in);
 int cargarDatos(struct Dato *datos, int *in);
 int subirDatos(struct Dato *datos, int in);
@@ -76,9 +77,10 @@ int main_jugadores() {
 }
 
 void ciclo(struct Dato *datos){
-    int index=0;
+    int index=2;
     int desicion=0,desicion2=0,el=0;
-    cargarDatos(datos, &index);
+    //cargarDatos(datos, &index);
+    cargarDatosC(datos);
      while(desicion!=3){
         mostrarDatos(datos, index+1,0);
         printf("Que desea hacer?\n1. Agregar jugador\n2. Consultar jugador\n3. Salir\n");
@@ -272,6 +274,31 @@ int subirDatos(struct Dato *datos, int in){
     }  
     fclose(file);   
     return 0;
+}
+void cargarDatosC(struct Dato *datos) { 
+    snprintf(datos[0].matricula, sizeof(datos[0].matricula), "202530977");
+    snprintf(datos[0].nombre, sizeof(datos[0].nombre), "Lenin");
+    snprintf(datos[0].apellido, sizeof(datos[0].apellido), "Rojas Sanchez");
+    datos[0].goles = 4;
+    datos[0].asistencias = 6;
+    datos[0].partidosJugados = 3;
+    snprintf(datos[0].posiciones, sizeof(datos[0].posiciones), "Portero");
+
+    snprintf(datos[1].matricula, sizeof(datos[1].matricula), "202523496");
+    snprintf(datos[1].nombre, sizeof(datos[1].nombre), "Daniel Elihud");
+    snprintf(datos[1].apellido, sizeof(datos[1].apellido), "Mancera Lopez");
+    datos[1].goles = 6;
+    datos[1].asistencias = 9;
+    datos[1].partidosJugados = 6;
+    snprintf(datos[1].posiciones, sizeof(datos[1].posiciones), "Delantero");
+
+    snprintf(datos[2].matricula, sizeof(datos[2].matricula), "202523252");
+    snprintf(datos[2].nombre, sizeof(datos[2].nombre), "Jose Francisco");
+    snprintf(datos[2].apellido, sizeof(datos[2].apellido), "Lozada Luna");
+    datos[2].goles = 5;
+    datos[2].asistencias = 6;
+    datos[2].partidosJugados = 8;
+    snprintf(datos[2].posiciones, sizeof(datos[2].posiciones), "Lateral derecho");
 }
 
 int main_partidos(){
