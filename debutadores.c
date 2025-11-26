@@ -1,7 +1,6 @@
 #include<stdio.h>
 #include <stdbool.h>
 #include <string.h>
-#include <direct.h>   // _getcwd
 #define MAX_PARTIDOS 128
 
 bool partidosCargados = false;
